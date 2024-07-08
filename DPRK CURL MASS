@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Define the base URL
+base_url="http://175.45.176.78/ko/index.php?"
+
+# Start and end dates (in MM-DD format)
+start_date="09-11"
+end_date="07-14"
+
+# Loop through each year from 2001 to 2024
+for year in $(seq 2001 2024); do
+    # Loop through each month and day combination
+    for month in {1..12}; do
+        for day in {1..31}; do
+            # Ensure valid date (skip if invalid)
+            if ! date -d "${year}-${month}-${day}" >/dev/null 2>&1; then
+                continue
+            fi
+
+            # Format the date as needed (MM-DD format)
+            formatted_date="$(printf "%02d-%02d" $month $day)"
+
+            # Construct the full formatted date with year and suffix
+            full_date="${formatted_date}-${year}"
+
+            # Format the entire string as needed
+            full_string="15@${full_date}-N001@"
+
+            # Base64 encode the formatted string
+            encoded_string=$(echo -n "$full_string" | base64)
+
+            # Construct the full URL
+            full_url="${base_url}${encoded_string}"
+
+            # Use curl to fetch the content (change options as needed)
+            curl -s "$full_url" 
+        done
+    done
+done
