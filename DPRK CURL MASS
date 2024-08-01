@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the base URL
-base_url="http://175.45.176.78/ko/index.php?"
+base_url="http://175.45.176.68/ko/index.php?"
 
 # Start and end dates (in MM-DD format)
 start_date="09-11"
