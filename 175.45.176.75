@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Base URL and file details
+base_url="http://175.45.176.75/index.php/revo_de/getDetail/"
+output_dir="./downloaded_files"
+
+# Create the output directory if it does not exist
+mkdir -p "$output_dir"
+
+# Date range setup
+start_date="2023-01-01"
+end_date="2024-08-01"
+
+# Function to convert date to a YYYYMMDD string
+date_to_string() {
+    date -d "$1" "+%y%m%d"
+}
+
+# Loop over each date in the range
+current_date="$start_date"
+while [[ "$current_date" < "$end_date" ]]; do
+    formatted_date=$(date_to_string "$current_date")
+    
+    # Loop over each file number
+    for num in $(seq -w 001 020); do
+        file_id="ikn${formatted_date}${num}"
+        url="${base_url}${file_id}/ko"
+        output_file="${output_dir}/${file_id}.html"
+        
+        echo "Downloading $url..."
+        curl -s "$url" -o "$output_file"
+    done
+    
+    # Move to the next day
+    current_date=$(date -d "$current_date + 1 day" "+%Y-%m-%d")
+done
+
+echo "Download completed."
