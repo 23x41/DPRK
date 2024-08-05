@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Define the base URL
+base_url="http://175.45.176.68/ko/index.php?"
+
+# Loop through dates from January 1, 2023, to August 1, 2024
+start_date="2023-01-01"
+end_date="2024-08-01"
+
+current_date="$start_date"
+
+while [ "$(date -d "$current_date" +%s)" -le "$(date -d "$end_date" +%s)" ]; do
+    # Loop through N-001 to N-015 with leading zeros
+    for ((suffix=1; suffix<=15; suffix++)); do
+        # Format the date and suffix as needed (with leading zeros for suffix)
+        formatted_suffix=$(printf "%03d" $suffix)
+        formatted_string="15@$current_date-N$formatted_suffix@"
+
+        # Base64 encode the formatted string
+        encoded_string=$(echo -n "$formatted_string" | base64)
+
+        # Construct the full URL
+        full_url="${base_url}${encoded_string}"
+
+        # Construct the output filename
+        output_filename="${current_date}-N${formatted_suffix}.txt"
+
+        # Use curl to fetch the content and save it to the output file
+        curl -s "$full_url" -o "$output_filename"
+    done
+
+    # Move to the next date
+    current_date=$(date -d "$current_date + 1 day" +%Y-%m-%d)
+done
